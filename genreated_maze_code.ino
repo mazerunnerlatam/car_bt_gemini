@@ -8,6 +8,37 @@
  *       para funcionar correctamente con tu hardware específico.
  */
 
+/*
+
+Ancho de la Línea vs. Separación de Sensores IR
+
+La relación ideal entre el ancho de la línea negra y la distancia entre los sensores IR adyacentes depende un poco del algoritmo que uses, pero aquí hay una guía general:
+
+Idealmente: Ancho de línea ≈ Distancia entre los dos sensores centrales.
+
+Si tienes 6 sensores (numerados 0 a 5), la distancia clave es entre el sensor 2 y el sensor 3.
+¿Por qué? Cuando el robot está perfectamente centrado, los sensores 2 y 3 estarán justo en los bordes de la línea negra (o uno justo dentro y otro justo fuera). Esto proporciona la máxima sensibilidad para detectar pequeñas desviaciones. El algoritmo de promedio ponderado o PID puede calcular un error muy preciso cercano a cero. Si el robot se desvía ligeramente, uno de estos sensores centrales cruzará claramente al blanco o al negro, generando una señal de error inmediata y clara.
+Aceptable: Ancho de línea < Distancia entre los dos sensores centrales.
+
+En este caso, cuando el robot está centrado, ambos sensores centrales (2 y 3) estarán sobre el fondo blanco, con la línea negra pasando entre ellos.
+Esto también funciona bien. Si el robot se desvía, uno de los sensores centrales detectará la línea negra, generando una señal de error. El algoritmo de promedio ponderado seguirá funcionando correctamente.
+Menos Ideal: Ancho de línea > Distancia entre los dos sensores centrales.
+
+Si la línea es significativamente más ancha que la separación entre los sensores 2 y 3, ambos podrían detectar negro simultáneamente cuando el robot está (aproximadamente) centrado.
+Esto puede dificultar que el algoritmo de promedio ponderado o PID calcule un error preciso cercano a cero, ya que la lectura central podría "saturarse" (ambos sensores centrales dan la misma lectura de "negro"). El robot podría tender a deambular un poco dentro de la línea ancha en lugar de seguir un camino preciso. La detección del centro exacto es más difícil.
+En resumen: Para un control preciso con 6 sensores y algoritmos como PID o promedio ponderado, apunta a que el ancho de la línea negra sea aproximadamente igual o ligeramente menor que la distancia física entre los dos sensores IR más centrales (sensores 2 y 3). Esto suele dar la mejor sensibilidad para detectar desviaciones y mantener el robot centrado. Sin embargo, la calibración y el ajuste del algoritmo son igualmente importantes. 
+
+
+Sí, en el código unificado que te proporcioné anteriormente, la forma en que se definen y utilizan los pines de los sensores junto con los pesos asignados implica que:
+
+A0 está configurado para ser el sensor más a la izquierda.
+A5 está configurado para ser el sensor más a la derecha.
+Esto se deduce de la combinación de estas dos líneas en el código:
+
+int sensorPins = {A0, A1, A2, A3, A4, A5}; - Define el orden en que se leen los pines.
+int weights = {-5, -3, -1, 1, 3, 5}; - Asigna los pesos correspondientes a cada sensor en ese orden.
+*/
+
 // --- Definiciones de Pines (¡AJUSTAR SEGÚN TU CABLEADO!) ---
 #define ENA 9   // Pin PWM para Velocidad Motor Izquierdo (Motor A)
 #define IN1 8   // Pin Dirección Motor Izquierdo 1
